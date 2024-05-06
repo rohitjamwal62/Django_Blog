@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ blog.title }}{% endblock %}
+
+{% block content %}
+    <article>
+        <h2>{{ blog.title }}</h2>
+        <p>{{ blog.content }}</p>
+        <p>Tags: {% for tag in blog.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    </article>
+    <h3>Comments</h3>
+    <ul>
+        {% for comment in comments %}
+            <li>{{ comment.content }}</li>
+            <form method="post" action="{% url 'blog:like_comment' comment.id %}">
+                {% csrf_token %}
+                <button type="submit">Like</button>
+            </form>
+        {% empty %}
+            <li>No comments yet.</li>
+        {% endfor %}
+    </ul>
+    <form method="post" action="{% url 'blog:add_comment' blog.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Comment</button>
+    </form>
+{% endblock %}
